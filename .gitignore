@@ -1,3 +1,6 @@
+# User added
+canvas_exercises/labs/**/**.tsv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

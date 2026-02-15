@@ -1,138 +1,138 @@
-Single SignOn with OIDC Auth0
+Single SignOn with OIDC (Auth0)
 
-In the context of the OIDCconformant authentication pipeline, single signon SSO must happen at the authorization server i.e., Auth0 rather than the application, which means that you must employ Universal Login and redirect users to the login page. To learn more, read Universal Login and Single SignOn. Auth01
+In the context of the OIDCconformant authentication pipeline, single signon (SSO) must happen at the authorization server (i.e., Auth0) rather than the application, which means that you must employ Universal Login and redirect users to the login page. To learn more, read Universal Login and Single SignOn. ([Auth0][1])
 
 At a general level, when performing SSO:
 
-1. If the user is not logged in locally, you should redirect them to your Auth0 login page authorize for authentication using a redirectbased flow, such as the Authorization Code Flow or Implicit Flow, depending on the type of application. Auth01
-2. If the user was already logged in through SSO, Auth0 will immediately authenticate them without needing to reenter credentials. Auth01
+1. If the user is not logged in locally, you should redirect them to your Auth0 login page (/authorize) for authentication using a redirectbased flow, such as the Authorization Code Flow or Implicit Flow, depending on the type of application. ([Auth0][1])
+2. If the user was already logged in through SSO, Auth0 will immediately authenticate them without needing to reenter credentials. ([Auth0][1])
 
-To determine whether users are logged in via SSO, use silent authentication, which either reauthenticates a user if they are already logged in or returns an error if they need to authenticate. In the legacy authentication pipeline, this could be achieved by using the ssodata endpoint, which is deprecated in the OIDCconformant pipeline. Auth01
-Secrets Manager uses AWS Identity and Access Management IAM to secure access to secrets. IAM provides authentication and access control. Authentication verifies the identity of a requester using signin credentials such as passwords, access keys, and multifactor authentication MFA tokens. Access control ensures only authorized identities can perform operations on AWS Secrets Manager resources. Secrets Manager uses IAM policies to define which identities can access which secrets and what actions they can perform. AWS Documentation1
+To determine whether users are logged in via SSO, use silent authentication, which either reauthenticates a user if they are already logged in or returns an error if they need to authenticate. In the legacy authentication pipeline, this could be achieved by using the /ssodata endpoint, which is deprecated in the OIDCconformant pipeline. ([Auth0][1])
+Secrets Manager uses AWS Identity and Access Management (IAM) to secure access to secrets. IAM provides authentication and access control. Authentication verifies the identity of a requester using signin credentials such as passwords, access keys, and multifactor authentication (MFA) tokens. Access control ensures only authorized identities can perform operations on AWS Secrets Manager resources. Secrets Manager uses IAM policies to define which identities can access which secrets and what actions they can perform. ([AWS Documentation][1])
 
 You can grant Secrets Manager permissions and control access in several ways:
 
- Secrets Manager administrator permissions: To grant administrator permissions, attach the SecretsManagerReadWrite and IAMFullAccess IAM policies. Granting full administrator permissions to end users is not recommended because broad permissions like IAMFullAccess are not appropriate for most users. AWS Documentation1
- Permissions to access secrets: Identitybased policies specify which IAM users, groups, or roles can perform actions on specific secrets. Resourcebased policies attached directly to a secret can also define who can access that secret. AWS Documentation1
- Permissions for Lambda rotation functions: For automated secret rotation, the Lambda function must have IAM permissions to access the secret and the service or database for which the secret contains credentials. AWS Documentation1
- Permissions for encryption keys: Secrets Manager uses AWS Key Management Service KMS to encrypt secrets. The default AWS managed key awssecretsmanager has the correct permissions. If you use a customermanaged KMS key, Secrets Manager must be granted permissions to use that key. AWS Documentation1
- Permissions for replication: You can control which identities are allowed to replicate secrets across AWS Regions using IAM policies. AWS Documentation1
+ Secrets Manager administrator permissions: To grant administrator permissions, attach the SecretsManagerReadWrite and IAMFullAccess IAM policies. Granting full administrator permissions to end users is not recommended because broad permissions like IAMFullAccess are not appropriate for most users. ([AWS Documentation][1])
+ Permissions to access secrets: Identitybased policies specify which IAM users, groups, or roles can perform actions on specific secrets. Resourcebased policies attached directly to a secret can also define who can access that secret. ([AWS Documentation][1])
+ Permissions for Lambda rotation functions: For automated secret rotation, the Lambda function must have IAM permissions to access the secret and the service or database for which the secret contains credentials. ([AWS Documentation][1])
+ Permissions for encryption keys: Secrets Manager uses AWS Key Management Service (KMS) to encrypt secrets. The default AWS managed key aws/secretsmanager has the correct permissions. If you use a customermanaged KMS key, Secrets Manager must be granted permissions to use that key. ([AWS Documentation][1])
+ Permissions for replication: You can control which identities are allowed to replicate secrets across AWS Regions using IAM policies. ([AWS Documentation][1])
 
-Access control can also be refined using tagbased attributebased access control ABAC, where permissions are based on tags associated with identities and secrets. AWS Documentation2
+Access control can also be refined using tagbased (attributebased) access control (ABAC), where permissions are based on tags associated with identities and secrets. ([AWS Documentation][2])
 
-Identitybased policies can be attached to IAM identities users, groups, roles to specify allowed actions on secrets such as reading values, listing secrets, or creating new secrets. AWS Documentation3
+Identitybased policies can be attached to IAM identities (users, groups, roles) to specify allowed actions on secrets such as reading values, listing secrets, or creating new secrets. ([AWS Documentation][3])
 
-For crossaccount access, both a resource policy on the secret and appropriate identity permissions in the requesting account are required to allow access from a different AWS account. AWS Documentation4
+For crossaccount access, both a resource policy on the secret and appropriate identity permissions in the requesting account are required to allow access from a different AWS account. ([AWS Documentation][4])
 
-Secrets Manager also supports access from onpremises environments using IAM Roles Anywhere to obtain temporary security credentials that follow IAM policies. AWS Documentation5
+Secrets Manager also supports access from onpremises environments using IAM Roles Anywhere to obtain temporary security credentials that follow IAM policies. ([AWS Documentation][5])
 
-1: https:docs.aws.amazon.comsecretsmanagerlatestuserguideauth-and-access.html?utmsourcechatgpt.com Authentication and access control for AWS Secrets Manager - AWS Secrets Manager
-2: https:docs.aws.amazon.comsecretsmanagerlatestuserguideauth-and-access-abac.html?utmsourcechatgpt.com Control access to secrets using attribute-based access control ABAC - AWS Secrets Manager
-3: https:docs.aws.amazon.comsecretsmanagerlatestuserguideauth-and-accessiam-policies.html?utmsourcechatgpt.com Identity-based policies - AWS Secrets Manager
-4: https:docs.aws.amazon.comsecretsmanagerlatestuserguideauth-and-accessexamplescross.html?utmsourcechatgpt.com Access AWS Secrets Manager secrets from a different account - AWS Secrets Manager
-5: https:docs.aws.amazon.comsecretsmanagerlatestuserguideauth-and-access-on-prem.html?utmsourcechatgpt.com Access secrets from an on-premises environment - AWS Secrets Manager
+[1]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html?utmsourcechatgpt.com Authentication and access control for AWS Secrets Manager - AWS Secrets Manager
+[2]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access-abac.html?utmsourcechatgpt.com Control access to secrets using attribute-based access control (ABAC) - AWS Secrets Manager
+[3]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-accessiam-policies.html?utmsourcechatgpt.com Identity-based policies - AWS Secrets Manager
+[4]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-accessexamplescross.html?utmsourcechatgpt.com Access AWS Secrets Manager secrets from a different account - AWS Secrets Manager
+[5]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access-on-prem.html?utmsourcechatgpt.com Access secrets from an on-premises environment - AWS Secrets Manager
 AWS IAM Identity Center is the AWS solution for connecting your workforce users to AWS managed applications such as Amazon Q Developer and Amazon Quick Suite and other AWS resources. You can connect your existing identity provider and synchronize users and groups from your directory, or create and manage your users directly in IAM Identity Center. You can then use IAM Identity Center for either or both of the following:
 
  User access to applications
- User access to AWS accounts AWS Documentation1
+ User access to AWS accounts ([AWS Documentation][1])
 
-You dont need to change your current AWS account workflows to use IAM Identity Center for access to AWS managed applications. If youre using federation with IAM for AWS account access, your users can continue to access AWS accounts in the same way they always have, and you can continue to use your existing workflows to manage that access. AWS Documentation1
+You dont need to change your current AWS account workflows to use IAM Identity Center for access to AWS managed applications. If youre using federation with IAM for AWS account access, your users can continue to access AWS accounts in the same way they always have, and you can continue to use your existing workflows to manage that access. ([AWS Documentation][1])
 
-IAM Identity Center streamlines and simplifies workforce user access to applications or AWS accounts, or both, through the following key capabilities: AWS Documentation1
+IAM Identity Center streamlines and simplifies workforce user access to applications or AWS accounts, or both, through the following key capabilities: ([AWS Documentation][1])
 
- Integration with AWS managed applications: AWS managed applications such as Amazon Q Developer and Amazon Redshift integrate with IAM Identity Center, which provides a common view of users and groups. AWS Documentation1
- Trusted identity propagation across applications: With trusted identity propagation, AWS managed applications can securely share a users identity with other AWS managed applications and authorize access to AWS resources based on the users identity. AWS Documentation1
- One place to assign permissions to multiple AWS accounts: IAM Identity Center provides a single place to assign permissions to groups of users in multiple AWS accounts based on common job functions or custom permissions. AWS Documentation1
- One point of federation to simplify user access to AWS: IAM Identity Center reduces administrative effort by providing one point of federation, so you only federate once and manage a single certificate when using a SAML2.0 identity provider. AWS Documentation1
- Userfriendly web portal access: The AWS access portal is a web portal that provides users with seamless access to all their assigned applications, AWS accounts, or both. AWS Documentation1
+ Integration with AWS managed applications: AWS managed applications such as Amazon Q Developer and Amazon Redshift integrate with IAM Identity Center, which provides a common view of users and groups. ([AWS Documentation][1])
+ Trusted identity propagation across applications: With trusted identity propagation, AWS managed applications can securely share a users identity with other AWS managed applications and authorize access to AWS resources based on the users identity. ([AWS Documentation][1])
+ One place to assign permissions to multiple AWS accounts: IAM Identity Center provides a single place to assign permissions to groups of users in multiple AWS accounts based on common job functions or custom permissions. ([AWS Documentation][1])
+ One point of federation to simplify user access to AWS: IAM Identity Center reduces administrative effort by providing one point of federation, so you only federate once and manage a single certificate when using a SAML2.0 identity provider. ([AWS Documentation][1])
+ Userfriendly web portal access: The AWS access portal is a web portal that provides users with seamless access to all their assigned applications, AWS accounts, or both. ([AWS Documentation][1])
 
-IAM Identity Center supports two deployment types: organization instances the recommended production configuration, deployed in the AWS Organizations management account to centrally manage user access across AWS and account instances bound to a single AWS account for isolated use cases. AWS Documentation1
+IAM Identity Center supports two deployment types: organization instances (the recommended production configuration, deployed in the AWS Organizations management account to centrally manage user access across AWS) and account instances (bound to a single AWS account for isolated use cases). ([AWS Documentation][1])
 
-On July26,2022, AWS Single SignOn was renamed to AWS IAM Identity Center. Legacy API namespaces and related CLI commands remain unchanged for backward compatibility. AWS Documentation1
+On July26,2022, AWS Single SignOn was renamed to AWS IAM Identity Center. Legacy API namespaces and related CLI commands remain unchanged for backward compatibility. ([AWS Documentation][1])
 
-1: https:docs.aws.amazon.comsinglesignonlatestuserguidewhat-is.html?utmsourcechatgpt.com What is IAM Identity Center? - AWS IAM Identity Center
+[1]: https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html?utmsourcechatgpt.com What is IAM Identity Center? - AWS IAM Identity Center
 OAuth application integration overview
 
 This page provides an overview of OAuth application integration in Google Cloud.
 
-You can use OAuth application integration to integrate your OAuthbased applications with Google Cloud. Federated users can use their identity provider IdP to sign in to the applications and access their Google Cloud products and data. OAuth application integration is a feature of Workforce Identity Federation. Google Cloud Documentation1
+You can use OAuth application integration to integrate your OAuthbased applications with Google Cloud. Federated users can use their identity provider (IdP) to sign in to the applications and access their Google Cloud products and data. OAuth application integration is a feature of Workforce Identity Federation. ([Google Cloud Documentation][1])
 
-To use OAuth application integration, you must first create a workforce identity pool and provider. You can then register the OAuthbased application using OAuth 2.0. Applications must be registered in the organization where your workforce identity pool and provider are configured. Google Cloud Documentation1
+To use OAuth application integration, you must first create a workforce identity pool and provider. You can then register the OAuthbased application using OAuth 2.0. Applications must be registered in the organization where your workforce identity pool and provider are configured. ([Google Cloud Documentation][1])
 
-Important: OAuth application integration works only with IdentityAware Proxy. Google Cloud Documentation1
+Important: OAuth application integration works only with IdentityAware Proxy. ([Google Cloud Documentation][1])
 
 OAuth application registration
 
-To configure an application to access Google Cloud, you register the application with Google Cloud by creating OAuth client credentials. The credential contains a client secret. The application uses the access token to access the Google Cloud products and data. Google Cloud Documentation1
+To configure an application to access Google Cloud, you register the application with Google Cloud by creating OAuth client credentials. The credential contains a client secret. The application uses the access token to access the Google Cloud products and data. ([Google Cloud Documentation][1])
 
 OAuth client and credential security risks and mitigations
 
-You must secure access to the IAM APIs and the client ID and secret. If the client ID and secret is leaked, security issues can result. These issues include the following: Google Cloud Documentation1
+You must secure access to the IAM APIs and the client ID and secret. If the client ID and secret is leaked, security issues can result. These issues include the following: ([Google Cloud Documentation][1])
 
- Impersonation: A malicious user with your client ID and secret can create an application that masquerades as your legitimate application. They can then gain unauthorized access to the user data and permissions that your application is entitled to, perform actions on the users behalf such as posting content, making API calls, or modifying user settings, or perform phishing attacks wherein the malicious user creates a fake login page that resembles the OAuth provider and tricks users into entering their credentials. Google Cloud Documentation1
- Reputational damage: A security breach can harm the reputation of your application and organization, causing users to lose trust. Google Cloud Documentation1
+ Impersonation: A malicious user with your client ID and secret can create an application that masquerades as your legitimate application. They can then gain unauthorized access to the user data and permissions that your application is entitled to, perform actions on the users behalf such as posting content, making API calls, or modifying user settings, or perform phishing attacks wherein the malicious user creates a fake login page that resembles the OAuth provider and tricks users into entering their credentials. ([Google Cloud Documentation][1])
+ Reputational damage: A security breach can harm the reputation of your application and organization, causing users to lose trust. ([Google Cloud Documentation][1])
 
-In the event of a breach, to mitigate these and other risks, assess the nature of the breach and do the following: Google Cloud Documentation1
+In the event of a breach, to mitigate these and other risks, assess the nature of the breach and do the following: ([Google Cloud Documentation][1])
 
- Ensure that only trusted users have IAM access to the OAuth client and credential API. Google Cloud Documentation1
- Rotate the client secret immediately, by rotating the client credential as follows: Google Cloud Documentation1
+ Ensure that only trusted users have IAM access to the OAuth client and credential API. ([Google Cloud Documentation][1])
+ Rotate the client secret immediately, by rotating the client credential as follows: ([Google Cloud Documentation][1])
 
   1. Create a new client credential for the OAuth client.
   2. Disable the old client credential.
-  3. Delete the old client credential. Google Cloud Documentation1
+  3. Delete the old client credential. ([Google Cloud Documentation][1])
 OAuth 2.0 and OpenID Connect protocols  Microsoft identity platform
 
-Knowing about OAuth or OpenID Connect OIDC at the protocol level isnt required to use the Microsoft identity platform. However, youll encounter protocol terms and concepts as you use the identity platform to add authentication to your apps. Understanding some fundamentals can assist your integration and overall experience. Microsoft Learn1
+Knowing about OAuth or OpenID Connect (OIDC) at the protocol level isnt required to use the Microsoft identity platform. However, youll encounter protocol terms and concepts as you use the identity platform to add authentication to your apps. Understanding some fundamentals can assist your integration and overall experience. ([Microsoft Learn][1])
 
 Roles in OAuth 2.0 and OIDC
 
 Four parties are generally involved in an OAuth 2.0 and OpenID Connect authentication and authorization exchange:
 
- Authorization server  The Microsoft identity platform acts as the authorization server also called an identity provider or IdP, securely handling the endusers information, access, and trust relationships. It issues security tokens that apps and APIs use to grant or deny access after a user signs in. Microsoft Learn1
- Client  The application requesting access to a protected resource. This can be a web app on a server, a singlepage app in a browser, or a web API calling another web API. Microsoft Learn1
- Resource owner  Usually the enduser whose data is being protected. They own the protected resource and can grant or deny access to it. Microsoft Learn1
- Resource server  Hosts or provides access to the resource owners data and relies on the authorization server to authenticate and authorize access based on tokens. Microsoft Learn1
+ Authorization server  The Microsoft identity platform acts as the authorization server (also called an identity provider or IdP), securely handling the endusers information, access, and trust relationships. It issues security tokens that apps and APIs use to grant or deny access after a user signs in. ([Microsoft Learn][1])
+ Client  The application requesting access to a protected resource. This can be a web app on a server, a singlepage app in a browser, or a web API calling another web API. ([Microsoft Learn][1])
+ Resource owner  Usually the enduser whose data is being protected. They own the protected resource and can grant or deny access to it. ([Microsoft Learn][1])
+ Resource server  Hosts or provides access to the resource owners data and relies on the authorization server to authenticate and authorize access based on tokens. ([Microsoft Learn][1])
 
 Tokens
 
-Bearer tokens are used in authentication and authorization flows to verify principals and grant access to protected resources. In the Microsoft identity platform, these tokens are formatted as JSON Web Tokens JWT. Microsoft Learn1
+Bearer tokens are used in authentication and authorization flows to verify principals and grant access to protected resources. In the Microsoft identity platform, these tokens are formatted as JSON Web Tokens (JWT). ([Microsoft Learn][1])
 
- Access tokens  Issued by the authorization server to a client application; used to access protected APIs. Microsoft Learn1
- ID tokens  Issued to the client to sign in users and obtain basic user information. Microsoft Learn1
- Refresh tokens  Used by clients to request new access and ID tokens from the authorization server. Microsoft Learn1
+ Access tokens  Issued by the authorization server to a client application; used to access protected APIs. ([Microsoft Learn][1])
+ ID tokens  Issued to the client to sign in users and obtain basic user information. ([Microsoft Learn][1])
+ Refresh tokens  Used by clients to request new access and ID tokens from the authorization server. ([Microsoft Learn][1])
 
 App Registration
 
 To trust security tokens issued by the identity platform, your app must be registered in the Microsoft Entra admin center. Registration assigns values to the app, including:
 
- Application client ID  A unique identifier included in issued tokens. Microsoft Learn1
- Redirect URI  Used by the authorization server after completing interactions like signing in. Microsoft Learn1
+ Application (client) ID  A unique identifier included in issued tokens. ([Microsoft Learn][1])
+ Redirect URI  Used by the authorization server after completing interactions like signing in. ([Microsoft Learn][1])
 
-Your apps registration also stores information about endpoints like authorization and token endpoints that your code uses to request tokens. Microsoft Learn1
+Your apps registration also stores information about endpoints (like authorization and token endpoints) that your code uses to request tokens. ([Microsoft Learn][1])
 
 Endpoints
 
-The Microsoft identity platform implements standardscompliant OAuth 2.0 and OpenID Connect OIDC 1.0 endpoints that support the authentication and authorization flows. Examples include: Microsoft Learn1
+The Microsoft identity platform implements standardscompliant OAuth 2.0 and OpenID Connect (OIDC) 1.0 endpoints that support the authentication and authorization flows. Examples include: ([Microsoft Learn][1])
 
 
-Authorization endpoint  https:login.microsoftonline.comissueroauth2v2.0authorize
-Token endpoint  https:login.microsoftonline.comissueroauth2v2.0token
+Authorization endpoint  https://login.microsoftonline.com/issuer/oauth2/v2.0/authorize
+Token endpoint  https://login.microsoftonline.com/issuer/oauth2/v2.0/token
 
 
-The exact URL formats vary by application type, signin audience, and Azure cloud instance. Microsoft Learn1
+The exact URL formats vary by application type, signin audience, and Azure cloud instance. ([Microsoft Learn][1])
 
 Next Steps
 
-To implement authentication flows for various application types, Microsoft recommends using the Microsoft Authentication Library MSAL rather than crafting raw HTTP calls. MSAL handles securely acquiring tokens and managing flows like authorization code, client credentials, onbehalfof, and OpenID Connect for user signin and single signon SSO. Microsoft Learn1
-Build a Single Sign-On SSO integration  OpenID Connect
+To implement authentication flows for various application types, Microsoft recommends using the Microsoft Authentication Library (MSAL) rather than crafting raw HTTP calls. MSAL handles securely acquiring tokens and managing flows like authorization code, client credentials, onbehalfof, and OpenID Connect for user signin and single signon (SSO). ([Microsoft Learn][1])
+Build a Single Sign-On (SSO) integration  OpenID Connect
 
-This guide teaches you how to integrate your federated SSO application with Okta, assuming you want to publish this app integration in the Okta Integration Network OIN. Okta Developer1
+This guide teaches you how to integrate your federated SSO application with Okta, assuming you want to publish this app integration in the Okta Integration Network (OIN). ([Okta Developer][1])
 
  Overview
 
-Single Sign-On SSO enables end users to sign in to multiple applications with one set of credentials. Okta supports two SSO standards for integration: OpenID Connect OIDC preferred and SAML. Okta recommends using OIDC for new SSO integrations. Okta Developer1
+Single Sign-On (SSO) enables end users to sign in to multiple applications with one set of credentials. Okta supports two SSO standards for integration: OpenID Connect (OIDC) (preferred) and SAML. Okta recommends using OIDC for new SSO integrations. ([Okta Developer][1])
 
-After choosing a protocol, select a deployment model. Okta offers redirect or embedded authentication models. Redirect authentication uses the Okta Sign-In Widget and is generally the easiest and most secure way to integrate. Okta Developer1
+After choosing a protocol, select a deployment model. Okta offers redirect or embedded authentication models. Redirect authentication uses the Okta Sign-In Widget and is generally the easiest and most secure way to integrate. ([Okta Developer][1])
 
  Build your integration
 
@@ -144,27 +144,27 @@ If your app hasnt implemented OIDC yet, review OAuth 2.0 and OpenID Connect fund
 4. Implement token validation logic.
 5. Support automatic credential rotation.
 6. Determine your sign-in redirect URIs.
-7. Consider Okta API rate limits when building your integration. Okta Developer1
+7. Consider Okta API rate limits when building your integration. ([Okta Developer][1])
 
-Okta uses a multi-tenant credential system for OIDC integrations: each customer org instance generates a unique set of client credentials that your app must track. Okta Developer1
+Okta uses a multi-tenant credential system for OIDC integrations: each customer org instance generates a unique set of client credentials that your app must track. ([Okta Developer][1])
 
  Determine the OAuth 2.0 flow to use
 
-For web applications, Okta mandates the Authorization Code flow. SPAs and mobile apps must use a backend service to manage authentication securely. The OIN does not support direct authentication from SPAs or native apps; instead, use a backend to interact with Okta. Okta Developer1
+For web applications, Okta mandates the Authorization Code flow. SPAs and mobile apps must use a backend service to manage authentication securely. The OIN does not support direct authentication from SPAs or native apps; instead, use a backend to interact with Okta. ([Okta Developer][1])
 
-For OIN integrations you must use the org authorization server not custom ones, and refresh tokens arent supported for OIN OIDC apps. Okta Developer1
+For OIN integrations you must use the org authorization server (not custom ones), and refresh tokens arent supported for OIN OIDC apps. ([Okta Developer][1])
 
  Token validation
 
-To check access tokens, use the introspect endpoint to verify token status. For OIN integrations, access tokens require remote validation, while ID tokens can be validated locally. Okta Developer1
+To check access tokens, use the /introspect endpoint to verify token status. For OIN integrations, access tokens require remote validation, while ID tokens can be validated locally. ([Okta Developer][1])
 
  Key rotation
 
-Okta rotates signing keys regularly. Your OIDC client should periodically fetch the public keys keys endpoint used to verify token signatures and handle key changes gracefully. Okta Developer1
+Okta rotates signing keys regularly. Your OIDC client should periodically fetch the public keys (/keys endpoint) used to verify token signatures and handle key changes gracefully. ([Okta Developer][1])
 
  Rate limits
 
-Pay attention to Okta API rate limits and monitor headers like X-Rate-Limit-Limit, X-Rate-Limit-Remaining, and X-Rate-Limit-Reset in responses. Public metadata endpoints are not subject to rate limiting. Okta Developer1
+Pay attention to Okta API rate limits and monitor headers (like X-Rate-Limit-Limit, X-Rate-Limit-Remaining, and X-Rate-Limit-Reset) in responses. Public metadata endpoints are not subject to rate limiting. ([Okta Developer][1])
 
 ---
 
@@ -173,36 +173,36 @@ Pay attention to Okta API rate limits and monitor headers like X-Rate-Limit-Limi
 After building your app integration:
 
 Submit an OIN integration:
-Follow the OIN Wizard to add required artifacts, create a testing instance, verify SSO flows, and submit for verification and publication. Okta Developer1
+Follow the OIN Wizard to add required artifacts, create a testing instance, verify SSO flows, and submit for verification and publication. ([Okta Developer][1])
 
 Add a private integration:
-Use the Admin Consoles App Integration Wizard to create a private app instance for your Okta org and test its SSO flows. Okta Developer1
-Build a Single Sign-On SSO integration
+Use the Admin Consoles App Integration Wizard to create a private app instance for your Okta org and test its SSO flows. ([Okta Developer][1])
+Build a Single Sign-On (SSO) integration
 
-This guide teaches you how to integrate your federated SSO application with Okta. This guide assumes that you intend to make this app integration public by publishing it in the Okta Integration Network OIN. developer.okta.com1
+This guide teaches you how to integrate your federated SSO application with Okta. This guide assumes that you intend to make this app integration public by publishing it in the Okta Integration Network (OIN). ([developer.okta.com][1])
 
 Learning outcome
 
-Create and test an SSO app integration for OIN submission. developer.okta.com1
+Create and test an SSO app integration for OIN submission. ([developer.okta.com][1])
 
 What you need
 
  Okta Integrator Free Plan org
- An app to integrate SSO with Okta developer.okta.com1
+ An app to integrate SSO with Okta ([developer.okta.com][1])
 
 Overview
 
-Single Sign-On SSO is an authentication method that enables end users to sign in to multiple applications with one set of credentials. If you have customers that use Okta as an Identity Provider, you want to publish your SSO app integration to the OIN so customers can easily configure SSO for your app. developer.okta.com1
+Single Sign-On (SSO) is an authentication method that enables end users to sign in to multiple applications with one set of credentials. If you have customers that use Okta as an Identity Provider, you want to publish your SSO app integration to the OIN so customers can easily configure SSO for your app. ([developer.okta.com][1])
 
-To create an SSO integration for the OIN, first sign up for a free Integrator Free Plan org. Next, select the type of SSO protocol to implement. Okta supports two SSO standards for your integration: OpenID Connect OIDC preferred and Security Assertion Markup Language SAML. Okta recommends using OIDC for new SSO integrations. developer.okta.com1
+To create an SSO integration for the OIN, first sign up for a free Integrator Free Plan org. Next, select the type of SSO protocol to implement. Okta supports two SSO standards for your integration: OpenID Connect (OIDC) (preferred) and Security Assertion Markup Language (SAML). Okta recommends using OIDC for new SSO integrations. ([developer.okta.com][1])
 
 Deployment models
 
-After choosing a protocol, select a deployment model. Okta offers redirect authentication or embedded authentication deployment models. Redirect authentication uses the Okta Sign-In Widget and is the easiest, most secure way to integrate with Okta. Okta recommends the redirect authentication deployment model if your situation meets the requirements. developer.okta.com1
+After choosing a protocol, select a deployment model. Okta offers redirect authentication or embedded authentication deployment models. Redirect authentication uses the Okta Sign-In Widget and is the easiest, most secure way to integrate with Okta. Okta recommends the redirect authentication deployment model if your situation meets the requirements. ([developer.okta.com][1])
 
 Build your integration
 
-If you're unfamiliar with SAML 2.0, review SAML concept and Okta SAML FAQs first. developer.okta.com1
+If you're unfamiliar with SAML 2.0, review SAML concept and Okta SAML FAQs first. ([developer.okta.com][1])
 
 Use SAML toolkits to quickly build your SSO integration. These toolkits help you implement SAML 2.0 and create the Service Provider WebSSO profile. Example toolkits include:
 
@@ -211,32 +211,32 @@ Use SAML toolkits to quickly build your SSO integration. These toolkits help you
  Python: PySAML2
  Ruby: Ruby-SAML
 
-Okta does not own or maintain these toolkits. developer.okta.com1
+Okta does not own or maintain these toolkits. ([developer.okta.com][1])
 
-Gather SAML attributes before creating an app integration instance in Okta. In a SAML integration, Okta is the Identity Provider IdP, and your app is the Service Provider SP. You should determine the default Assertion Consumer Service ACS URL for your integration the SP sign-in URL, find your audience URI or SP Entity ID, optionally set up a relay state page, and gather any required SAML attributes your app needs. Okta recommends keeping the number of SAML attributes minimal. SAML integrations must use SHA-256 encryption; if using SHA-1, upgrade to SHA-256. developer.okta.com1
+Gather SAML attributes before creating an app integration instance in Okta. In a SAML integration, Okta is the Identity Provider (IdP), and your app is the Service Provider (SP). You should determine the default Assertion Consumer Service (ACS) URL for your integration (the SP sign-in URL), find your audience URI or SP Entity ID, optionally set up a relay state page, and gather any required SAML attributes your app needs. Okta recommends keeping the number of SAML attributes minimal. SAML integrations must use SHA-256 encryption; if using SHA-1, upgrade to SHA-256. ([developer.okta.com][1])
 
 Create your integration in Okta
 
-This section assumes you already built the SSO integration in your app. Instructions for adding your integration into Okta vary depending on whether you want to provide a public or private integration. developer.okta.com1
+This section assumes you already built the SSO integration in your app. Instructions for adding your integration into Okta vary depending on whether you want to provide a public or private integration. ([developer.okta.com][1])
 
 Submit an OIN integration
 
-If you want your integration in the Okta Integration Network, follow the OIN Wizard instructions to add required integration artifacts and metadata, create a test app integration instance, test SSO flows, and submit your integration for verification and publication. Creating a test instance does not automatically make it public; after testing, submit for verification. developer.okta.com1
+If you want your integration in the Okta Integration Network, follow the OIN Wizard instructions to add required integration artifacts and metadata, create a test app integration instance, test SSO flows, and submit your integration for verification and publication. Creating a test instance does not automatically make it public; after testing, submit for verification. ([developer.okta.com][1])
 
 Add a private integration
 
-If you want the integration to exist only in your Okta org, use the Application Integration Wizard in the Admin Console to create an app integration instance and test your SSO flows. Once configured, your org users can access the app. Common use cases include testing in a private org or having advanced SAML features not supported by the OIN Wizard. developer.okta.com1
+If you want the integration to exist only in your Okta org, use the Application Integration Wizard in the Admin Console to create an app integration instance and test your SSO flows. Once configured, your org users can access the app. Common use cases include testing in a private org or having advanced SAML features not supported by the OIN Wizard. ([developer.okta.com][1])
 
 Next steps
 
-To publish your integration, start the submission process to have your SSO integration included in the OIN by reviewing the publication overview and following the OIN Wizard for submission. developer.okta.com1
+To publish your integration, start the submission process to have your SSO integration included in the OIN by reviewing the publication overview and following the OIN Wizard for submission. ([developer.okta.com][1])
 how to enable EntraID SSO on a github enterprise 169189
 
 Hello
 we have a github enterprise, because it needed to be in a european data residency it was created for us by the github support team
 i am now trying to implement SSO on the enterprise, but i need to login with the setup user account, i have never created or received this
 when the enterprise was created by the github support team, just got a invitation to become owner with and i used my reguler github account for that, i am listed as enterprise owner.
-any idea of what i am missing? i cannot seem to find any reference to this setup user anywhere and i am unable to follow the steps provided with my owner account the settings are missing
+any idea of what i am missing? i cannot seem to find any reference to this setup user anywhere and i am unable to follow the steps provided with my owner account (the settings are missing)
 
 ---
 
@@ -245,7 +245,7 @@ Resolving Entra ID SSO Setup for GitHub Enterprise
 Issue:
 You're unable to configure Entra ID SSO because:
 
-1. The enterprise was provisioned by GitHub Support EU data residency
+1. The enterprise was provisioned by GitHub Support (EU data residency)
 2. You never received setup user credentials
 3. Your owner account doesn't see the required settings
 
@@ -253,30 +253,30 @@ Step-by-Step Solution:
 
 1. Verify Your Access
    Confirm you're logged into the GitHub account that's listed as Enterprise Owner
-   Navigate to: https:github.comenterprisesYOUR-ENTERPRISE-NAMEhttps:github.comenterprisesYOUR-ENTERPRISE-NAME replace with your enterprise name
+   Navigate to: [https://github.com/enterprises/YOUR-ENTERPRISE-NAME](https://github.com/enterprises/YOUR-ENTERPRISE-NAME) (replace with your enterprise name)
 
 2. Required Permissions
    You need both:
     Enterprise Owner role in GitHub
-    Global Admin in Entra ID Azure AD
+    Global Admin in Entra ID (Azure AD)
 
 3. Alternative Access Methods
    If settings are missing:
    Try accessing via direct URL:
-   https:github.comenterprisesYOUR-ENTERPRISE-NAMEsettingssecurityhttps:github.comenterprisesYOUR-ENTERPRISE-NAMEsettingssecurity
+   [https://github.com/enterprises/YOUR-ENTERPRISE-NAME/settings/security](https://github.com/enterprises/YOUR-ENTERPRISE-NAME/settings/security)
    Use GitHub's API to check configuration:
    bash
-   curl -H Authorization: Bearer YOURPAT https:api.github.comenterprisesYOUR-ENTERPRISE-NAMEhttps:api.github.comenterprisesYOUR-ENTERPRISE-NAME
+   curl -H Authorization: Bearer YOURPAT [https://api.github.com/enterprises/YOUR-ENTERPRISE-NAME](https://api.github.com/enterprises/YOUR-ENTERPRISE-NAME)
 
 4. Recover Setup User
    Since GitHub Support created the instance:
    Contact GitHub Support directly via:
-   https:support.github.comcontacthttps:support.github.comcontact
+   [https://support.github.com/contact](https://support.github.com/contact)
    Reference your enterprise name and EU data residency request
    Request either:
-   a The setup user credentials
-   b Temporary elevation of your owner permissions
-   c A reset of the SSO configuration portal
+   a) The setup user credentials
+   b) Temporary elevation of your owner permissions
+   c) A reset of the SSO configuration portal
 
 5. Temporary Workaround
    Ask GitHub Support to:
@@ -284,7 +284,7 @@ Step-by-Step Solution:
 
 Post-Setup
 Once SSO is enabled:
- Configure team synchronization: https:docs.github.comenenterprise-cloudlatestadminidentity-and-access-managementusing-enterprise-managed-users-for-iamabout-enterprise-managed-usershttps:docs.github.comenenterprise-cloudlatestadminidentity-and-access-managementusing-enterprise-managed-users-for-iamabout-enterprise-managed-users
+ Configure team synchronization: [https://docs.github.com/en/enterprise-cloudlatest/admin/identity-and-access-management/using-enterprise-managed-users-for-iam/about-enterprise-managed-users](https://docs.github.com/en/enterprise-cloudlatest/admin/identity-and-access-management/using-enterprise-managed-users-for-iam/about-enterprise-managed-users)
 Key Notes:
  The setup user is typically only used during initial configuration
  GitHub's EU-hosted enterprises sometimes have different provisioning workflows
@@ -300,7 +300,7 @@ thank you for your time
 
 It's alright. I'm happy to help you
 Question:
-I have a website www.example.comhttp:www.example.com. I have a few clients businesses using my website, let's say they are C1 www.c1.comhttp:www.c1.com, C2 www.c2.comhttp:www.c2.com and C3 www.c3.comhttp:www.c3.com. I want to enable Okta SAML authentication for them so that whenever they come to my website, they can manage their identities through Okta. I already have Google and Microsoft OIDC integrated in my system, but I want to integrate SAML through Okta as well so that new clients who are already using Okta in their system can integrate with my app seamlessly. My application is in Java and infrastructure is hosted on AWS. What are the integration steps for Okta SAML integration? I went through their documentation but the process is still not clear to me. Also, as it's the first time I'm integrating with SAML, I'm not sure about these details. I went through the Okta documentation and even tried by putting dummy values for required fields just to see their positioning in my system but I am unable to get any luck out of this.
+I have a website [www.example.com](http://www.example.com). I have a few clients (businesses) using my website, let's say they are C1 ([www.c1.com](http://www.c1.com)), C2 ([www.c2.com](http://www.c2.com)) and C3 ([www.c3.com](http://www.c3.com)). I want to enable Okta SAML authentication for them so that whenever they come to my website, they can manage their identities through Okta. I already have Google and Microsoft OIDC integrated in my system, but I want to integrate SAML through Okta as well so that new clients who are already using Okta in their system can integrate with my app seamlessly. My application is in Java and infrastructure is hosted on AWS. What are the integration steps for Okta SAML integration? I went through their documentation but the process is still not clear to me. Also, as it's the first time I'm integrating with SAML, I'm not sure about these details. I went through the Okta documentation and even tried by putting dummy values for required fields just to see their positioning in my system but I am unable to get any luck out of this.
 
 ---
 
@@ -309,29 +309,260 @@ You'd need a separate instance of your application for each of the clients, beca
 
 ---
 
-Comment on answer:
-Is there any GitHub repository that can be referred for this? As I'm not sure about the steps you're mentioning. Stack Overflow1
+Comment (on answer):
+Is there any GitHub repository that can be referred for this? As I'm not sure about the steps you're mentioning. ([Stack Overflow][1])
 
 ---Understand the relationships between SSO, OAuth, OIDC, SAML, Okta
 
-Im getting confused by those terminologies and how theyre related to others. Many articles on the internet dont agree on a single view whether those are categorized as protocols, standards or frameworks or even concepts. Some articles call OAuth a standard while some others call it a framework and none explains the differences between a protocol and a framework and a concept I think protocol means the same as standard.
+Im getting confused by those terminologies and how theyre related to others. Many articles on the internet dont agree on a single view whether those are categorized as protocols, standards or frameworks or even concepts. Some articles call OAuth a standard while some others call it a framework and none explains the differences between a protocol and a framework and a concept (I think protocol means the same as standard).
 
 Ive used some of them in application development but I still feel like Im a newbie in this area. I would appreciate if someone can simplify those terms.
 
 ---
 
-A standard is anything which some authority like the Internet Engineering Task Force IETF has declared to be a standard. Thats it. Standards can specify protocols, algorithms, names and many other things. For example, you find a lot of IETF Internet Standards published through a Request for Comments RFC. OAuth 2.0 has been standardized in RFC 6749, so its clearly a standard. As the title The OAuth 2.0 Authorization Framework already suggests, its also called a framework which is a rather vague term. In addition to that, the RFC refers to OAuth 2.0 as a protocol. So you could say its all at the same time: a standard by the IETF, a framework and a protocol.
+A standard is anything which some authority like the Internet Engineering Task Force (IETF) has declared to be a standard. Thats it. Standards can specify protocols, algorithms, names and many other things. For example, you find a lot of IETF Internet Standards published through a Request for Comments (RFC). OAuth 2.0 has been standardized in RFC 6749, so its clearly a standard. As the title The OAuth 2.0 Authorization Framework already suggests, its also called a framework which is a rather vague term. In addition to that, the RFC refers to OAuth 2.0 as a protocol. So you could say its all at the same time: a standard by the IETF, a framework and a protocol.
 
-A protocol is a formally defined set of rules which is meant to ensure that, for example, different network hosts can communicate with each other in an unambiguous manner. Without clearly specified protocols like IP, TCP or HTTP, we couldnt have this discussion because our devices would have no idea which data to transmit at which time to whom. If you read RFC 6749 for OAuth 2.0, you can find a lot of formal descriptions which tell implementers how exactly the messages look like and who is supposed to send which message in which order. This is crucial for the authentication to work because all involved parties have to agree on how to communicate. Not every protocol is a standard. For example, you could invent your own protocol right now, but as long as you dont convince a recognized authority like the IETF, it wont be a standard at least not a widely accepted one.
+A protocol is a formally defined set of rules which is meant to ensure that, for example, different network hosts can communicate with each other in an unambiguous manner. Without clearly specified protocols like IP, TCP or HTTP, we couldnt have this discussion because our devices would have no idea which data to transmit at which time to whom. If you read RFC 6749 for OAuth 2.0, you can find a lot of formal descriptions which tell implementers how exactly the messages look like and who is supposed to send which message in which order. This is crucial for the authentication to work because all involved parties have to agree on how to communicate. Not every protocol is a standard. For example, you could invent your own protocol right now, but as long as you dont convince a recognized authority like the IETF, it wont be a standard (at least not a widely accepted one).
 
 As I already said, framework isnt a clearly defined term. You could say its a generic solution which can be applied to different use cases. For example, in the case of OAuth, the standard explicitly allows custom extensions to define new grant types, access token types etc.
 
 Regarding the relationships between SSO, OAuth, OIDC etc.:
 
  Single Sign-On is an abstract concept where a user authenticates at some central service and is then allowed to access multiple different systems. This description is of course far too vague for an actual software or hardware implementation, so you need concrete protocols to define the details.
- OAuth is an authorization protocol or framework which mostly specifies how the owner of a protected resource can allow a third party to access this resource without knowing the owners credentials the Resource Owner Password Credentials grant type deviates from this principle, but its largely considered obsolete.
+ OAuth is an authorization protocol (or framework) which mostly specifies how the owner of a protected resource can allow a third party to access this resource without knowing the owners credentials (the Resource Owner Password Credentials grant type deviates from this principle, but its largely considered obsolete).
  OpenID Connect is an authentication protocol built on top of OAuth which specifies how a user can authenticate at a service through a third-party identity provider like Google or Amazon. You can use OIDC to implement SSO. Unlike OAuth, OpenID Connect is standardized by the OpenID Foundation.
- SAML is a competing SSO implementation standardized by the Organization for the Advancement of Structured Information Standards OASIS. So its an alternative to OIDC.
+ SAML is a competing SSO implementation standardized by the Organization for the Advancement of Structured Information Standards (OASIS). So its an alternative to OIDC.
  Okta is a company which also happens to be an OIDC provider.
 
----
+---Identity as a Service  Developer Cheat Sheet
+
+1. How do users authenticate to my application?
+
+Use: Standards-based authentication (OpenID Connect/OAuth2) Provides: -
+Centralized login  SSO - No custom login pages - No password storage in
+the app - ID tokens and access tokens in JWT format for easy claim
+parsing
+
+------------------------------------------------------------------------
+
+2. How does my application identify the user?
+
+Use: Identity claims  attributes supplied in tokens Provides: -
+Reliable identifiers (subject ID, email, employee ID) - Consistent user
+identity across applications - Eliminates custom identity lookup tables
+or embedded user stores
+
+------------------------------------------------------------------------
+
+3. How do I control what users are allowed to do?
+
+Use: Coarse-grained role information delivered as token claims
+Provides: - Clear role categories (admin, operator, auditor, etc.) -
+Simple, maintainable authorization logic - A structure that easily grows
+as new features require new roles
+
+------------------------------------------------------------------------
+
+4. How are user permissions assigned or removed over time?
+
+Use: Centralized access governance  SCIM 2.0 provisioning Provides: -
+Automated account creation and removal - Role assignment/de-assignment
+synced to applications - Reduced manual user admin and fewer stale
+permissions - Complete audit trail of lifecycle events
+
+------------------------------------------------------------------------
+
+5. How does my app store and retrieve secrets securely?
+
+Use: Centralized secrets vault  API-based retrieval Provides: - Secure
+storage of DB credentials, API keys, and certificates - No secrets in
+repos, pipelines, or local config files - Automated secret rotation -
+Full auditing of secret access actions
+
+------------------------------------------------------------------------
+
+6. How do my services securely authenticate to other services?
+
+Use: OAuth 2.0 client credentials  JWT access tokens Provides: - Zero
+shared passwords - Clear machine identity
+
+------------------------------------------------------------------------
+
+7. How do I ensure identity  permissions work the same in every environment?
+
+Use: Centralized identity config  standard libraries Provides: -
+Consistent behavior in dev, test, and prod - Less configuration drift -
+Faster environment setup - Reduced identity-related bugs
+
+------------------------------------------------------------------------
+
+What This Gives You
+
+- Less custom auth/identity code
+- Consistent access patterns across all applications
+- Automatic alignment with enterprise identity standards
+- Stronger, more maintainable security
+Overview
+
+This page contains some of the best resources we have collected that
+will help you rapidly understand what OpenID Connect is and how to
+integrate it in your application.
+
+Your friendly IAM (Identity and Access Management) engineer here. Please
+take a look at the difference between Authentication vs Authorization.
+If you want to level up in your IAM skill, bookmark this for later:
+Intro to IAM
+
+Concepts
+
+Here is the concept roadmap you need to understand OpenID Connect (OIDC)
+to have a great experience with integrating it in your application:
+
+OpenID Connect Roadmap
+
+graph LR; AJSON  BJWT - JSON Web Token  COAuth 2.0  DOpenID
+Connect  E(OIDC Example Code);
+
+JSON
+
+This resource is here for completeness, but I am confident you already
+got this down! :D JSON Overview
+
+JWT - JSON Web Token
+
+JWT is the token standard that oAuth and OpenID Connect use religiously.
+It is super clean and well defined. Welcome to standards-based
+authentication!
+
+Auth0 is a great company that provides an excellent resource on
+understanding what at JWT is: JWT Overview - An excellent tool for
+working with JWTs: JWT Decoder Tool
+
+OAuth 2.0
+
+OAuth (Open Authorization) is the standard for access delegation. Here
+is a great Medium article that explains it on a high-level:
+Understanding OAuth2.
+
+- Specific guidance on how to use oAuth Scopes to define access within
+  your app on an access token: oAuth Scopes Best Practices
+
+You dont have to implement an OAuth2 client to then understand OpenID
+Connect. Just make sure the OAuth terminology doesnt confuse you. Here
+is the big kicker. OAuth2 just has an Access Token. OpenID Connect is ID
+Token  Access Token.
+
+What is an ID Token you might ask? Jump right into learning OpenID
+Connect!
+
+OpenID Connect
+
+This resource from Okta explains the difference between OAuth 2.0 and
+OIDC in a way that builds on your OAuth knowledge nicely: OAuth 2.0 and
+OpenID Connect Overview.
+
+- Here is a different Medium article that visualizes the different flow
+  types better: Diagrams of All the OpenID Connect Flows
+
+If you are bored of reading, here is a great video demonstration of what
+OAuth2 is and how OpenID Connect cleanly builds on top of that:
+Illustrated Guide to OAuth and OpenID Connect - 16 min.
+
+Now that you understand the protocol. Dive back into the data to
+understand what you should expect from the Identity Provider (IdP) in
+terms of an Access Token and ID Token: ID Token vs AccessToken - To
+specifically understand the claims that are in an Access Token and ID
+Token, see this Learn about OAuth 2.0 and OpenID Connect claims
+
+OIDC Example Code
+
+The moment you have been waiting for is here. Finally some juicy code
+that shows you how others have implemented OIDC!
+
+Remember, ID Token  Authentication and Access Token  Authorization.
+You can use claims from both to fully determine user access, but that is
+the intention!
+
+.NET Example
+
+.NET makes it very easy because it is implemented as Middleware.
+Protecting endpoints is as simple as putting a decorator over an API
+Endpoint function, and OIDC authentication is required to access it.
+
+Python Django Example
+
+Python FastAPI Example
+
+Python Flask Example
+
+Here are links that provide example code for the implementation:
+
+General Flask SSO Example(s):
+https://www.squash.io/enterprise-functionalities-with-python-flask-sso-integrations-and-more/
+
+A flask-oidc library implementation:
+https://www.toptal.com/flask/flask-login-tutorial-sso
+Overview
+
+This page contains some of the best resources we have collected that
+will help you rapidly understand what SCIM 2.0 is and how to integrate
+it in your application.
+
+SCIM 2.0 is an amazing API standard because it allows for Identity
+Governance systems to manage account provisioning and permission
+management for you. It is able to do this because the APIs you expose
+allow for a standardized method of creating and managing user data for
+your application.
+
+Concepts
+
+Here is a basic concept roadmap you need to understand SCIM 2.0 to have
+a great experience programming this standardized identity provisioning
+interface in your application.
+
+SCIM 2.0 Connect Roadmap
+
+graph LR; A[HTTP]  BWeb Programming  C[REST API]  D[SCIM 2.0] 
+E(SCIM 2.0 Example Code);
+
+HTTP Basics
+
+While this is incredibly fundamental, you can learn HTTP and all things
+web programming at W3 Schools here: What is HTTP
+
+Web Programming
+
+If you are primarily a front-end developer, backend developer, mix of
+both, or dont know what Im talking about, get the gist from W3
+Schools: FullStack Development.
+
+REST API Basics
+
+W3 Schools has it again! You can quickly understand and play with REST
+APIs here: Web API Introduction.
+
+SCIM 2.0 Primer
+
+Best thing is to understand the brief history of the protocol. Get the
+gist of what SCIM is and how its changed to really know what it is
+designed to do: SCIM 1.0 vs SCIM 2.0
+
+SCIM Planning Resources
+
+1.  SCIM 2.0 Guide from Okta: Okta and SCIM Version 2.0
+2.  SCIM 2.0 Guide from Microsoft Tutorial: Develop and plan
+    provisioning for a SCIM endpoint in Microsoft Entra ID
+
+Example Code
+
+These two examples are based on .NET, but the logic presented here can
+be translated to implement the same REST APIs in any backend REST API
+framekwork.
+
+1.  How to Manage User Lifecycle with .NET and SCIM
+    - Best to help understanding the implementation piece of SCIM 2.0
+2.  Using Microsofts SCIM sample
+    - Great tutorial to walk through example code and interact with the
+      SCIM APIs on your own machine
+    - NOTE: You will have to retrieve the example code from GitHub. A
+      common way to do this is through KiteWorks!

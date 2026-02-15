@@ -14,9 +14,9 @@ This markdown defines the different domains of knowledge/information defined in 
 
 1. General Technical Conversation Corpus
   - Helpdesk Ticket datasets
-    - https://www.kaggle.com/datasets/suraj520/customer-support-ticket-dataset
+    - https://www.kaggle.com/datasets/suraj520/customer-support-ticket-dataset [removed] (bad text/ticket content)
     - https://www.kaggle.com/datasets/tobiasbueck/multilingual-customer-support-tickets
-    - http://data.mendeley.com/datasets/btm76zndnt/2
+    - http://data.mendeley.com/datasets/btm76zndnt/2 [removed] (no text data available, just ticket statistics/features)
 
 2. IAM-related form posts corpus
   - https://security.stackexchange.com/questions/281987/understand-the-relationships-between-sso-oauth-oidc-saml-okta

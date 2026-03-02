@@ -33,3 +33,5 @@ This markdown defines the different domains of knowledge/information defined in 
 4. Integration Guides
   - https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html
   - https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html
+
+5. IAM-related book PDFs

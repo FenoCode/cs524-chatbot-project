@@ -15,7 +15,7 @@ def chunk_sentences(sentences, window=3, stride=1):
 
 # Retrieve corpus from '/dataset'
 chunks=[]
-doc_files = list(Path("F:\CS524\cs524-chatbot-project\dataset").rglob('*.txt'))
+doc_files = list(Path("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\dataset").rglob('*.txt'))
 for file in doc_files:
     text = file.read_text(encoding='utf-8')
     sentences = sent_tokenize(text)

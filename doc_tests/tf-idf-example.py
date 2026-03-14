@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Retrieve corpus from '/dataset'
-doc_files = list(Path("F:\CS524\cs524-chatbot-project\dataset").rglob('*.txt'))
+doc_files = list(Path("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\dataset").rglob('*.txt'))
 doc_content_list = [file.read_text(encoding='utf-8') for file in doc_files]
 
 # User search query

@@ -48,3 +48,6 @@ for sentence, pred, true in zip(df['sentence'], predictions, y_truth):
     print(f"Predicted Sentiment: {le.inverse_transform([pred])[0]}")
     print(f"True Sentiment: {le.inverse_transform([true])[0]}\n")
 print(f"Accuracy (dr.seuss text): {accuracy * 100}%")
+
+
+# Perform inference on chatbot document corpus

@@ -1,6 +1,6 @@
 import nltk
 
-text = open("F:\CS524\cs524-chatbot-project\canvas_exercises\m1_d6_text.txt").read()
+text = open("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\canvas_exercises\m1_d6_text.txt").read()
 
 stop_words = set(nltk.corpus.stopwords.words('english'))
 

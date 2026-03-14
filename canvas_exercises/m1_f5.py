@@ -1,6 +1,6 @@
 import nltk
 
-text = open("F:\CS524\cs524-chatbot-project\canvas_exercises\m1_f5_text.txt").read()
+text = open("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\canvas_exercises\m1_f5_text.txt").read()
 sentence_tokens = nltk.sent_tokenize(text)
 sentence_breakdown = []
 for sentence in sentence_tokens:

@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Read content
-text = open('F:\CS524\cs524-chatbot-project\canvas_exercises\m2_c5_text.txt').read()
+text = open('F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\canvas_exercises\m2_c5_text.txt').read()
 text_tokens = word_tokenize(text.lower())
 
 stop_words = set(stopwords.words('english'))

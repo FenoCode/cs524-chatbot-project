@@ -22,7 +22,7 @@ def calculate_bigram_perplexity(sentence, bigram_model, unigram_counts, unique_w
 sentence = "identity is important"
 
 # Assuming corpus is a list of sentences
-corpus = open("F:\CS524\cs524-chatbot-project\canvas_exercises\m3_b6.txt", "r").read()
+corpus = open("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\canvas_exercises\m3_b6.txt", "r").read()
 translator = str.maketrans('','', string.punctuation)
 corpus = corpus.translate(translator)  # Remove punctuation
 corpus = list(filter(None, corpus.splitlines()))  # split into sentences and remove empty lines

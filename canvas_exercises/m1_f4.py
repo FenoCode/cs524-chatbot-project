@@ -1,7 +1,7 @@
 import nltk
 import re
 
-text = open("F:\CS524\cs524-chatbot-project\canvas_exercises\m1_f4_text.txt").read()
+text = open("F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\canvas_exercises\m1_f4_text.txt").read()
 text_tokens = nltk.word_tokenize(text)
 text_labels = nltk.pos_tag(text_tokens)
 

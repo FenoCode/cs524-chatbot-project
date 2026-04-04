@@ -61,7 +61,8 @@ encoder_states = [state_h, state_c]
 
 # Decoder
 decoder_inputs = Input(shape=(None,))
-decoder_embedding = Embedding(target_vocab_size, latend_dim, mask_zero=True)(decoder_inputs)
+decoder_embedding_layer = Embedding(target_vocab_size, latend_dim, mask_zero=True)
+decoder_embedding = decoder_embedding_layer(decoder_inputs)
 decoder_lstm = LSTM(latend_dim, return_sequences=True, return_state=True)
 decoder_outputs, _, _ = decoder_lstm(decoder_embedding, initial_state=encoder_states)
 decoder_dense = Dense(target_vocab_size, activation='softmax')
@@ -80,15 +81,23 @@ encoder_model = Model(encoder_inputs, encoder_states)
 decoder_state_input_h = Input(shape=(latend_dim,))
 decoder_state_input_c = Input(shape=(latend_dim,))
 decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
+decoder_inputs_single = Input(shape=(1,))
+
+decoder_embedding_inf = decoder_embedding_layer(decoder_inputs_single)
+
 decoder_outputs, state_h, state_c = decoder_lstm(
-    decoder_embedding, initial_state=decoder_states_inputs
+    decoder_embedding_inf,
+    initial_state=decoder_states_inputs
 )
+
 decoder_states = [state_h, state_c]
 decoder_outputs = decoder_dense(decoder_outputs)
+
 decoder_model = Model(
-    [decoder_inputs] + decoder_states_inputs,
+    [decoder_inputs_single] + decoder_states_inputs,
     [decoder_outputs] + decoder_states
 )
+
 # Function to decode sequence
 def decode_sequence(input_seq):
     # Encode the input as state vectors.

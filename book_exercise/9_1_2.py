@@ -23,27 +23,27 @@ target_texts = [
 ]
 target_texts = [f"<starttoken> {text} <endtoken>" for text in target_texts]
 
-
-max_len_input = max(len(seq.split()) for seq in input_texts)
-max_len_target = max(len(seq.split()) for seq in target_texts)
-
 # Tokenize data and pad sequences
 input_vectorizer = TextVectorization(
     max_tokens=1000,
     output_mode="int",
-    output_sequence_length=max_len_input,
 )
 target_vectorizer = TextVectorization(
     max_tokens=1000,
     output_mode="int",
-    output_sequence_length=max_len_target,
 )
+
 input_vectorizer.adapt(input_texts)
 input_vocab_size = len(input_vectorizer.get_vocabulary())
 encoder_input_data = input_vectorizer(input_texts).numpy()
+max_len_input = max(len(seq) for seq in encoder_input_data)
+encoder_input_data = pad_sequences(encoder_input_data, maxlen=max_len_input, padding='post')
+
 target_vectorizer.adapt(target_texts)
 target_vocab_size = len(target_vectorizer.get_vocabulary())
 target_sequences = target_vectorizer(target_texts).numpy()
+max_len_target = max(len(seq) for seq in target_sequences)
+target_sequences = pad_sequences(target_sequences, maxlen=max_len_target, padding='post')
 
 #split into target sequences into input and output for decoder
 target_input_sequences = target_sequences[:, :-1]
@@ -55,7 +55,7 @@ latend_dim = 256
 # Encoder
 encoder_inputs = Input(shape=(max_len_input,))
 encoder_embedding = Embedding(input_vocab_size, latend_dim, mask_zero=True)(encoder_inputs)
-encocder_lstm = LSTM(latend_dim, return_state=True)
+encocder_lstm = LSTM(latend_dim, return_sequences=True, return_state=True)
 encoder_outputs, state_h, state_c = encocder_lstm(encoder_embedding)
 encoder_states = [state_h, state_c]
 

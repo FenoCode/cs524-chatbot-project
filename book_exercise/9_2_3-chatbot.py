@@ -6,7 +6,7 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.layers import TextVectorization;
 import json
 
-with open("F:\CS524\historybook_to_dataset\output-haagsptruit.jsonl", "r", encoding="utf-8") as f:
+with open(r"F:\CS524\historybook_to_dataset\iam-qa-dataset.jsonl", "r", encoding="utf-8") as f:
     chatbot_qa_data = [json.loads(line) for line in f]
 input_texts = [item["instruction"] for item in chatbot_qa_data]
 target_texts = [item["output"] for item in chatbot_qa_data]
@@ -14,18 +14,20 @@ target_texts = [item["output"] for item in chatbot_qa_data]
 
 input_texts = [f"<starttoken> {text} <endtoken>" for text in input_texts]
 target_texts = [f"<starttoken> {text} <endtoken>" for text in target_texts]
+
 #max_len_input = max(len(seq.split()) for seq in input_texts)
 #max_len_target = max(len(seq.split()) for seq in target_texts)
 
 # Tokenize data and pad sequences
 input_vectorizer = TextVectorization(
-    max_tokens=1000,
+    max_tokens=2000,
     output_mode="int",
 )
 target_vectorizer = TextVectorization(
-    max_tokens=1000,
+    max_tokens=3000,
     output_mode="int",
 )
+
 input_vectorizer.adapt(input_texts)
 input_vocab_size = len(input_vectorizer.get_vocabulary())
 encoder_input_data = input_vectorizer(input_texts).numpy()
@@ -65,7 +67,7 @@ decoder_outputs = decoder_dense(decoder_outputs)
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 # Train the model
-model.fit([encoder_input_data, target_input_sequences], target_output_sequences, epochs=100, batch_size=64, validation_split=0.2)
+model.fit([encoder_input_data, target_input_sequences], target_output_sequences, epochs=150, batch_size=64, validation_split=0.2)
 
 # inference models for translation
 encoder_model = Model(encoder_inputs, encoder_states)
@@ -127,6 +129,21 @@ def decode_sequence(input_seq):
         states_value = [h, c]
     
     return decoded_sentence.strip()
+
+# Save models
+encoder_model.save("encoder_model.keras")
+decoder_model.save("decoder_model.keras")
+
+# Save vectorizers + metadata
+metadata = {
+    "input_vocab": input_vectorizer.get_vocabulary(),
+    "target_vocab": target_vectorizer.get_vocabulary(),
+    "max_len_input": max_len_input,
+    "max_len_target": max_len_target
+}
+
+with open("metadata.json", "w", encoding="utf-8") as f:
+    json.dump(metadata, f)
 
 # Test the model
 for seq_index in range(5):

@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI
 from fastapi import Depends
 from pydantic import BaseModel
@@ -30,11 +31,9 @@ async def lifespan(app: FastAPI):
     summarizer = SummarizationInferenceService()
     print("Models loaded!")
     yield
+     # Cleanup on shutdown (optional)
     summarizer = None
-    # Cleanup on shutdown (optional)
-    #global chatbot
-    #chatbot = None
-
+    chatbot = None
 
 def get_summarizer():
     return summarizer
@@ -44,7 +43,6 @@ def get_chatbot():
 
 app = FastAPI(lifespan=lifespan)
 
-
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -53,12 +51,21 @@ def health():
 
 @app.post("/generate_answer", response_model=ChatbotResponse)
 def generate_answer(data: ChatbotRequest, svc: ChatbotInference = Depends(get_chatbot)):
-    print(data.question)
     answer = svc.generate_response(data.question)
-    print(answer)
     return ChatbotResponse(answer=answer, length=len(answer))
 
 @app.post("/generate_summary", response_model=SummaryResponse)
 def generate_summary(data: SummaryRequest, svc: SummarizationInferenceService = Depends(get_summarizer)):
     summary = svc.summarize(data.text)
     return SummaryResponse(summary=summary, length=len(summary))
+
+@app.post("/evaluate_performance_rogue", response_model=dict)
+def evaluate_performance_rogue(svc: ChatbotInference = Depends(get_chatbot)):
+    with open(r"F:\CS524\historybook_to_dataset\iam-qa-dataset.jsonl", "r", encoding="utf-8") as f:
+        chatbot_qa_data = [json.loads(line) for line in f]
+        input_texts = [item["instruction"] for item in chatbot_qa_data]
+        target_texts = [item["output"] for item in chatbot_qa_data]
+
+    avg_score = svc.evaluate_performance_rogue(input_texts, target_texts)
+
+    return {"rouge_score": avg_score}

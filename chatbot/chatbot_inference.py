@@ -73,3 +73,15 @@ class ChatbotInference:
             states_value = [h, c]
 
         return " ".join(decoded_tokens)
+    
+    def evaluate_performance_rogue(self, input_texts, target_texts):
+        from rouge import Rouge
+        rogue = Rouge()
+        responses = []
+        for input_text in input_texts:
+            response = self.generate_response(input_text)
+            responses.append(response)
+
+        avg_score = rogue.get_scores(responses, target_texts, avg=True)
+        
+        return avg_score

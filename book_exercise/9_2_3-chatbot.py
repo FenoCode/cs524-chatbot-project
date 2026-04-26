@@ -6,6 +6,7 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.layers import TextVectorization;
 import json
 
+MODEL_SAVE_DIR = "F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\models\qa_dataset_seq2seq"
 with open(r"F:\CS524\historybook_to_dataset\iam-qa-dataset.jsonl", "r", encoding="utf-8") as f:
     chatbot_qa_data = [json.loads(line) for line in f]
 input_texts = [item["instruction"] for item in chatbot_qa_data]
@@ -24,7 +25,7 @@ input_vectorizer = TextVectorization(
     output_mode="int",
 )
 target_vectorizer = TextVectorization(
-    max_tokens=3000,
+    max_tokens=4000,
     output_mode="int",
 )
 
@@ -45,7 +46,7 @@ target_input_sequences = target_sequences[:, :-1]
 target_output_sequences = target_sequences[:, 1:]
 
 # Build the Seq2Seq model
-latend_dim = 256
+latend_dim = 512
 
 # Encoder
 encoder_inputs = Input(shape=(max_len_input,))
@@ -67,7 +68,7 @@ decoder_outputs = decoder_dense(decoder_outputs)
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 # Train the model
-model.fit([encoder_input_data, target_input_sequences], target_output_sequences, epochs=150, batch_size=64, validation_split=0.2)
+model.fit([encoder_input_data, target_input_sequences], target_output_sequences, epochs=100, batch_size=64, validation_split=0.2)
 
 # inference models for translation
 encoder_model = Model(encoder_inputs, encoder_states)
@@ -131,8 +132,8 @@ def decode_sequence(input_seq):
     return decoded_sentence.strip()
 
 # Save models
-encoder_model.save("encoder_model.keras")
-decoder_model.save("decoder_model.keras")
+encoder_model.save(f"{MODEL_SAVE_DIR}/encoder_model.keras")
+decoder_model.save(f"{MODEL_SAVE_DIR}/decoder_model.keras")
 
 # Save vectorizers + metadata
 metadata = {
@@ -142,7 +143,7 @@ metadata = {
     "max_len_target": max_len_target
 }
 
-with open("metadata.json", "w", encoding="utf-8") as f:
+with open(f"{MODEL_SAVE_DIR}/metadata.json", "w", encoding="utf-8") as f:
     json.dump(metadata, f)
 
 # Test the model

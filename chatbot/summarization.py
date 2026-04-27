@@ -4,7 +4,7 @@ import torch
 
 
 model_name = "facebook/bart-large-cnn"
-MODEL_CONTEXT_SIZE = 1024 - 24 # BART's max input length is 1024 tokens
+MODEL_CONTEXT_SIZE = 512 - 12 # BART's max input length is 1024 tokens
 
 class SummarizationInferenceService:
     def __init__(self):
@@ -32,7 +32,8 @@ class SummarizationInferenceService:
         return chunks
     
     # source: https://www.geeksforgeeks.org/nlp/website-summarizer-using-bart/
-    def summarize(self, text, chunk_size=MODEL_CONTEXT_SIZE, chunk_summary_size=128):
+    def summarize(self, text, chunk_size=MODEL_CONTEXT_SIZE, chunk_summary_size=256):
+        text = "Summarize: " + text
         chunks = self.splitTextIntoChunks(text, chunk_size)
 
         summaries = []

@@ -7,7 +7,7 @@ from keras.layers import TextVectorization;
 import json
 
 MODEL_SAVE_DIR = "F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\models\qa_dataset_seq2seq"
-with open(r"F:\CS524\historybook_to_dataset\iam-qa-dataset.jsonl", "r", encoding="utf-8") as f:
+with open(r"F:\CS524\cs524-chatbot-project-refresh\cs524-chatbot-project\dataset\generated_datasets\iam-qa-dataset.jsonl", "r", encoding="utf-8") as f:
     chatbot_qa_data = [json.loads(line) for line in f]
 input_texts = [item["instruction"] for item in chatbot_qa_data]
 target_texts = [item["output"] for item in chatbot_qa_data]

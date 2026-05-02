@@ -239,3 +239,6 @@ cs524-chatbot-project/
   - Q/A dataset generation: https://github.com/AyabongaQwabi/historybook_to_dataset
       - Forked repository: https://github.com/FenoCode/corpus_to_dataset
       - *NOTE:* This original repository was used as a reference for data preparation and model training. The forked version contains modifications specific to this project, including adjustments to the corpus and training scripts to better suit the chatbot's domain and requirements.
+
+- **Project Notes**:
+  - This README was generated using a combination of manual documentation and AI-assisted writing tools to ensure clarity and comprehensiveness. The project structure and implementation details were designed to meet the requirements of the CS524 course while also providing a practical application of NLP techniques in an enterprise support context.

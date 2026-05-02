@@ -35,3 +35,10 @@ This markdown defines the different domains of knowledge/information defined in 
   - https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html
 
 5. IAM-related book PDFs
+
+## Generated Datasets (`/generated_datasets`)
+
+1. `iam-qa-dataset.jsonl`
+  - Collection of Q/A pairs generated from source documents included in `/dataset` (excluding any CSVs)
+2. `/generated_datasets/qa_split`
+  - Q/A pairs associated from each source document

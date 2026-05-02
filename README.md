@@ -233,3 +233,8 @@ cs524-chatbot-project/
 
 - **TensorFlow/Keras**:
   - Documentation: https://www.tensorflow.org/guide/keras
+
+- **GitHub Repositories**:
+  - Q/A dataset generation: https://github.com/AyabongaQwabi/historybook_to_dataset
+      - Forked repository: https://github.com/FenoCode/corpus_to_dataset
+      - *NOTE:* This original repository was used as a reference for data preparation and model training. The forked version contains modifications specific to this project, including adjustments to the corpus and training scripts to better suit the chatbot's domain and requirements.

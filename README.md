@@ -160,9 +160,12 @@ cs524-chatbot-project/
 ├── canvas_exercises/            # Course assignment exercises
 │   ├── m1_d6.py                 # Module 1, Day 6 exercise
 │   ├── m1_e4.py                 # Module 1, Exercise 4
-│   └── labs/                    # Lab assignments
-│       ├── m2_g1/               # Module 2, Lab G1
-│       └── ...
+│   ├──labs/                    # Lab assignments
+│   │   ├── m2_g1/               # Module 2, Lab G1
+│   │   └── ...
+│   └── tfidf-example/          # TF-IDF exercises
+│       ├── tf-idf-example.py   # TF-IDF implementation
+│       └── tf-idf-example-advanced.py # Advanced TF-IDF
 ├── chatbot/                     # Main chatbot implementation
 │   ├── chatbot_train.py         # Model training script
 │   ├── chatbot_rest_service/    # C# Bot Framework service
@@ -184,10 +187,8 @@ cs524-chatbot-project/
 │   └── iam-dev-resources/       # IAM documentation
 ├── models/                      # Trained model checkpoints
 │   ├── lstm_m3_f1_lab/          # LSTM model for lab
-│   └── qa_dataset_seq2seq/      # Q&A seq2seq model
-└── doc_tests/                   # Documentation examples
-    ├── tf-idf-example.py        # TF-IDF implementation
-    └── tf-idf-example-advanced.py # Advanced TF-IDF
+    └── qa_dataset_seq2seq/      # Q&A seq2seq model
+
 ```
 
 **Note**: The `book_exercise/` and `canvas_exercises/` directories contain standalone Python exercises and assignments completed during the course. These are not part of the main chatbot application but demonstrate foundational NLP concepts and implementation skills.
